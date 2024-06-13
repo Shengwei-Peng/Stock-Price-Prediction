@@ -1,1 +1,2 @@
-
+pandas==2.2.2
+twstock==1.4.0
