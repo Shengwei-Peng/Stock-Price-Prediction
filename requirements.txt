@@ -1,2 +1,17 @@
+certifi==2024.6.2
+charset-normalizer==3.3.2
+colorama==0.4.6
+idna==3.7
+lxml==5.2.2
+numpy==1.26.4
 pandas==2.2.2
+python-dateutil==2.9.0.post0
+pytz==2024.1
+requests==2.32.3
+setuptools==69.5.1
+six==1.16.0
+tqdm==4.66.4
 twstock==1.4.0
+tzdata==2024.1
+urllib3==2.2.1
+wheel==0.43.0
