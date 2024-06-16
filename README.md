@@ -37,6 +37,30 @@ To run this project locally, follow these steps:
 
 ## Data
 
+The dataset used in this project consists of historical stock prices fetched using the `twstock` library. Here is an example of how to fetch the data:
+
+```python
+import twstock
+
+# Fetch historical stock data for stock code '2330' from January 2014 to present
+stock = twstock.Stock('2330')
+stock.fetch_from(2014, 1)
+```
+
+Below is a brief description of each column in the dataset and a sample table to illustrate the data format:
+
+| Column      | Description                                   | Data Type  |
+| ----------- | --------------------------------------------- | ---------- |
+| Date        | The trading date                              | YYYY-MM-DD |
+| Capacity    | The total traded volume of stocks             | int        |
+| Turnover    | The total value of traded stocks              | int        |
+| Open        | The opening price of the stock                | float      |
+| High        | The highest price during the day              | float      |
+| Low         | The lowest price during the day               | float      |
+| Close       | The closing price of the stock                | float      |
+| Change      | The price change compared to the previous day | float      |
+| Transaction | The number of transactions                    | int        |
+
 ## Model
 
 ## Results
