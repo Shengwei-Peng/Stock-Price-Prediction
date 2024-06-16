@@ -21,7 +21,7 @@ class Stocker():
     def __init__(self, args):
         self.args = args
 
-    def pre_process(self):
+    def preprocess(self):
         data = pd.read_csv(self.args.data_path)
         data['date'] = pd.to_datetime(data['date'])
         data = data.sort_values('date')
@@ -58,7 +58,7 @@ class Stocker():
         self.model.fit(self.x_train, self.y_train)
         self.y_pred = self.model.predict(self.x_test)
 
-    def test(self):
+    def evaluate(self):
         r2 = r2_score(self.y_test, self.y_pred)
         mse = mean_squared_error(self.y_test, self.y_pred)
         rmse = np.sqrt(mse)
@@ -73,7 +73,7 @@ class Stocker():
         for key, value in self.metrics.items():
             print(f"{key:<35}: {value:>10.4f}")
 
-    def plot(self):
+    def visualize(self):
         date = self.data['date'].iloc[-len(self.y_pred):]
         plt.figure(figsize=(14, 7))
         plt.plot(date, self.y_test, label='True Price', color='blue', linestyle='-', linewidth=2)
