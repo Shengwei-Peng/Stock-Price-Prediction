@@ -1,11 +1,10 @@
 import argparse
 import numpy as np
 import pandas as pd
-from tqdm import tqdm
-from typing import Tuple
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
+from tqdm import tqdm
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from catboost import CatBoostRegressor
 
 def parse_args()-> argparse.Namespace:
