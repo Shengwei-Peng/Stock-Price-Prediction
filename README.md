@@ -6,8 +6,8 @@ This repository contains code and resources for predicting stock prices using ma
 
 - [Introduction](#introduction)
 - [Installation](#installation)
-- [Usage](#usage)
 - [Data](#data)
+- [Usage](#usage)
 - [Model](#model)
 - [Results](#results)
 - [Contributing](#contributing)
@@ -32,37 +32,6 @@ To run this project locally, follow these steps:
     ```bash
     pip install -r requirements.txt
     ```
-
-## Usage
-
-To use the stock price prediction tool, follow these steps:
-
-1. **Prepare your dataset**: Ensure your dataset is in the correct format and located in the `data` directory.
-2. **Run the main script**: Execute the following command to start the process:
-   ```bash
-      python main.py --data_path data/2330.csv --model lstm --test_size 0.2
-   ```
-The script will perform the following steps:
-   - **Preprocessing**: Clean and prepare the data for analysis.
-   - **Training**: Train the prediction models on the prepared data.
-   - **Evaluation**: Assess the performance of the trained models and generate performance metrics.
-   - **Visualization**: Create visualizations to compare the predicted stock prices with actual prices.
-
-### Configuration Options
-You can customize the behavior of the tool using various configuration options. Here are some examples:
-
-- `data_path`: Specify the path to the input data file.
-- `model`: Choose the machine learning model to use (e.g., linear regression, decision tree).
-- `test_size`: Define the proportion of the data to use for testing (e.g., 0.2 for 20% testing data).
-
-For a complete list of arguments, refer to the parse_args function in `utils.py`.
-
-### Visualizing Results
-The tool generates various plots to help understand the performance of the models. It includes:
-- Line plots comparing the predicted and actual stock prices
-
-These visualizations help in analyzing the accuracy and effectiveness of the predictions.
-
 
 ## Data
 
@@ -89,6 +58,40 @@ Below is a brief description of each column in the dataset and a sample table to
 | Close       | The closing price of the stock                | float      |
 | Change      | The price change compared to the previous day | float      |
 | Transaction | The number of transactions                    | int        |
+
+## Usage
+
+To use the stock price prediction tool, follow these steps:
+
+1. **Prepare your dataset**: Ensure your dataset is in the correct format and located in the `data` directory.
+2. **Run the main script**: Execute the following command to start the process:
+   ```bash
+   python main.py --data_path data/2330.csv --model lstm --test_size 20 --window_size 20
+   ```
+The script will perform the following steps:
+   - **Preprocessing**: Clean and prepare the data for analysis.
+   - **Training**: Train the prediction models on the prepared data.
+   - **Evaluation**: Assess the performance of the trained models and generate performance metrics.
+   - **Visualization**: Create visualizations to compare the predicted stock prices with actual prices.
+
+### Configuration Options
+You can customize the behavior of the tool using various configuration options. Here are some examples:
+
+- `data_path`: Specify the path to the input data file.
+- `model`: Choose the machine learning model to use (e.g., CatBoost.).
+- `test_size`: Specify the number of latest trading days to use as the test set.
+- `window_size`: Specify the number of past days (D) to use for predicting the next day (D+1).
+
+
+For a complete list of arguments, refer to the `parse_args` function in `utils.py`.
+
+### Visualizing Results
+The tool generates various plots to help understand the performance of the models. It includes:
+- **Line plots**: Comparing the predicted and actual stock prices over time.
+- **Residual plots**: Visualizing the residuals (differences between true and predicted values) over time to identify any patterns or anomalies.
+- **Scatter plots**: Comparing the true prices with the predicted prices to assess the model's accuracy visually.
+
+These visualizations help in analyzing the accuracy and effectiveness of the predictions.
 
 ## Model
 

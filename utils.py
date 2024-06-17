@@ -11,6 +11,7 @@ def parse_args()-> argparse.Namespace:
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_path", default=None, type=str, required=True)
+    parser.add_argument("--model", default="CatBoost", type=str)
     parser.add_argument("--window_size", default=20, type=int)
     parser.add_argument("--test_size", default=20, type=int)
     args = parser.parse_args()
@@ -54,9 +55,13 @@ class Stocker():
         self.y_test = y_test
 
     def train(self):
-        self.model = CatBoostRegressor(verbose=100)
-        self.model.fit(self.x_train, self.y_train)
-        self.y_pred = self.model.predict(self.x_test)
+        if self.args.model == "CatBoost":
+            self.model = CatBoostRegressor(verbose=100)
+            self.model.fit(self.x_train, self.y_train)
+            self.y_pred = self.model.predict(self.x_test)
+
+        elif self.args.model == "LSTM":
+            pass
 
     def evaluate(self):
         r2 = r2_score(self.y_test, self.y_pred)
@@ -78,11 +83,32 @@ class Stocker():
         plt.figure(figsize=(14, 7))
         plt.plot(date, self.y_test, label='True Price', color='blue', linestyle='-', linewidth=2)
         plt.plot(date, self.y_pred, label='Predicted Price', color='red', linestyle='--', linewidth=2)
-        plt.title('TSMC Stock Price Prediction', fontsize=16, fontweight='bold')
+        plt.title('Stock Price Prediction', fontsize=16, fontweight='bold')
         plt.xlabel('Date', fontsize=14)
         plt.ylabel('Stock Price', fontsize=14)
         plt.legend(loc='best', fontsize=12)
         plt.grid(True, linestyle='--', alpha=0.6)
         plt.tight_layout()
         plt.show()
-        
+
+        residuals = self.y_test - self.y_pred
+        plt.figure(figsize=(14, 7))
+        plt.plot(date, residuals, label='Residuals', color='purple', linestyle='-', linewidth=2)
+        plt.title('Residuals over Time', fontsize=16, fontweight='bold')
+        plt.xlabel('Date', fontsize=14)
+        plt.ylabel('Residuals', fontsize=14)
+        plt.legend(loc='best', fontsize=12)
+        plt.grid(True, linestyle='--', alpha=0.6)
+        plt.tight_layout()
+        plt.show()
+
+        plt.figure(figsize=(14, 7))
+        plt.scatter(self.y_test, self.y_pred, label='Predicted vs True', color='green')
+        plt.plot([self.y_test.min(), self.y_test.max()], [self.y_test.min(), self.y_test.max()], color='red', linestyle='--', linewidth=2)
+        plt.title('Predicted vs True Prices', fontsize=16, fontweight='bold')
+        plt.xlabel('True Prices', fontsize=14)
+        plt.ylabel('Predicted Prices', fontsize=14)
+        plt.legend(loc='best', fontsize=12)
+        plt.grid(True, linestyle='--', alpha=0.6)
+        plt.tight_layout()
+        plt.show()
