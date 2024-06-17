@@ -118,6 +118,13 @@ The performance of each model is evaluated using various metrics, including R²,
 - **RMSE (Root Mean Squared Error)**: The square root of MSE, providing an error metric in the same unit as the target variable. Lower values indicate better performance.
 - **MAE (Mean Absolute Error)**: Measures the average absolute difference between the predicted and actual values. Lower values indicate better performance.
 
+### Data Details
+- **Stock**: TSMC (2330)
+- **Date Range**: January 2014 to December 2023
+- **Test Set**: The last 20 trading days
+
+The models were trained on data spanning nearly a decade to capture various market conditions and trends. The final 20 trading days of this period were reserved for testing to evaluate the models' performance on recent data.
+
 ## Contributing
 
 Contributions are welcome! Please follow these steps to contribute:
