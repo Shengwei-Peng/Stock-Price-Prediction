@@ -1,3 +1,5 @@
+import torch
+import random
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -5,7 +7,17 @@ from tqdm import tqdm
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from argparse import Namespace, ArgumentParser
-from models import CatBoost, Model
+from models import xgboost, random_forest, networks
+
+def set_seed(seed):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed(seed)
+        torch.cuda.manual_seed_all(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
 
 def parse_args()-> Namespace:
 
@@ -14,6 +26,7 @@ def parse_args()-> Namespace:
     parser.add_argument("--model", default="catboost", type=str)
     parser.add_argument("--window_size", default=20, type=int)
     parser.add_argument("--test_size", default=20, type=int)
+    parser.add_argument("--seed", default=0, type=int)
     args = parser.parse_args()
     
     return args
@@ -21,7 +34,7 @@ def parse_args()-> Namespace:
 class Stocker():
     def __init__(self, args: Namespace):
         self.args = args
-
+        set_seed(self.args.seed)
     def preprocess(self):
         data = pd.read_csv(self.args.data_path)
         data['date'] = pd.to_datetime(data['date'])
@@ -55,10 +68,12 @@ class Stocker():
         self.y_test = y_test
 
     def train(self):
-        if self.args.model == "catboost":
-            self.model = CatBoost()
+        if self.args.model == "random_forest":
+            self.model = random_forest(self.args.seed)
+        elif self.args.model == "xgboost":
+            self.model = xgboost(self.args.seed)
         else:
-            self.model = Model(model=self.args.model, input_shape=self.x_train.shape)
+            self.model = networks(model=self.args.model, input_shape=self.x_train.shape)
         
         self.model.fit(self.x_train, self.y_train)
         self.y_pred = self.model.predict(self.x_test)
@@ -89,7 +104,6 @@ class Stocker():
         plt.legend(loc='best', fontsize=12)
         plt.grid(True, linestyle='--', alpha=0.6)
         plt.tight_layout()
-        plt.show()
 
         residuals = self.y_test - self.y_pred
         plt.figure(figsize=(14, 7))
@@ -100,7 +114,6 @@ class Stocker():
         plt.legend(loc='best', fontsize=12)
         plt.grid(True, linestyle='--', alpha=0.6)
         plt.tight_layout()
-        plt.show()
 
         plt.figure(figsize=(14, 7))
         plt.scatter(self.y_test, self.y_pred, label='Predicted vs True', color='green')
@@ -112,4 +125,3 @@ class Stocker():
         plt.grid(True, linestyle='--', alpha=0.6)
         plt.tight_layout()
         plt.show()
-    

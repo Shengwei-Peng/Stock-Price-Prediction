@@ -5,11 +5,13 @@ from catboost import CatBoostRegressor
 from torch.optim import Adam
 from torch.utils.data import DataLoader, TensorDataset
 from typing import Tuple
+from sklearn.ensemble import RandomForestRegressor
+from xgboost import XGBRegressor
 
-class CatBoost():
-    def __init__(self):
+class random_forest():
+    def __init__(self, seed):
         super().__init__()
-        self.model = CatBoostRegressor(verbose=100)
+        self.model = RandomForestRegressor(random_state=seed)
 
     def fit(self, x_train: np.ndarray, y_train: np.ndarray):
         x_train = x_train.reshape(x_train.shape[0], -1)
@@ -21,7 +23,22 @@ class CatBoost():
         return y_pred
 
 
-class Model():
+class xgboost():
+    def __init__(self, seed):
+        super().__init__()
+        self.model = XGBRegressor(random_state=seed)
+
+    def fit(self, x_train: np.ndarray, y_train: np.ndarray):
+        x_train = x_train.reshape(x_train.shape[0], -1)
+        self.model.fit(x_train, y_train)
+
+    def predict(self, x_test: np.ndarray) -> np.ndarray:
+        x_test = x_test.reshape(x_test.shape[0], -1)
+        y_pred = self.model.predict(x_test)
+        return y_pred
+
+
+class networks():
     def __init__(self, model: str, input_shape: Tuple[int, ...], batch_size: int = 4096, epochs: int = 100, lr: float = 1e-4):
         super().__init__()
         self.epochs = epochs
@@ -29,9 +46,9 @@ class Model():
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
         if model == "lstm":
-            self.model = LSTM(input_size=input_shape[2], hidden_size=50, num_layers=10).to(self.device)
+            self.model = lstm(input_size=input_shape[2], hidden_size=50, num_layers=10).to(self.device)
         elif model == "mlp":
-            self.model = MLP(input_size=input_shape[1] * input_shape[2], hidden_size=512).to(self.device)
+            self.model = mlp(input_size=input_shape[1] * input_shape[2], hidden_size=512).to(self.device)
 
         self.criterion = nn.MSELoss()
         self.optimizer = Adam(self.model.parameters(), lr=lr)
@@ -66,7 +83,7 @@ class Model():
         return y_pred
 
 
-class LSTM(nn.Module):
+class lstm(nn.Module):
     def __init__(self, input_size: int, hidden_size: int, num_layers: int):
         super().__init__()
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -82,7 +99,7 @@ class LSTM(nn.Module):
         x = self.fc(x[:, -1, :])
         return x
 
-class MLP(nn.Module):
+class mlp(nn.Module):
     def __init__(self, input_size: int, hidden_size: int):
         super().__init__()
         self.flatten = nn.Flatten()

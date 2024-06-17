@@ -66,7 +66,7 @@ To use the stock price prediction tool, follow these steps:
 1. **Prepare your dataset**: Ensure your dataset is in the correct format and located in the `data` directory.
 2. **Run the main script**: Execute the following command to start the process:
    ```bash
-   python main.py --data_path data/2330.csv --model catboost --test_size 20 --window_size 20
+   python main.py --data_path data/2330.csv --model lstm --test_size 20 --window_size 20 --seed 0
    ```
 The script will perform the following steps:
    - **Preprocessing**: Clean and prepare the data for analysis.
@@ -78,10 +78,10 @@ The script will perform the following steps:
 You can customize the behavior of the tool using various configuration options. Here are some examples:
 
 - `data_path`: Specify the path to the input data file.
-- `model`: Choose the machine learning model to use.
+- `model`: Choose the machine learning model to use. Options include `random_forest`, `xgboost`, and `lstm`.
 - `test_size`: Specify the number of latest trading days to use as the test set.
 - `window_size`: Specify the number of past days (D) to use for predicting the next day (D+1).
-
+- `seed`: Set a random seed for reproducibility of results.
 
 For a complete list of arguments, refer to the `parse_args` function in `utils.py`.
 
@@ -93,9 +93,30 @@ The tool generates various plots to help understand the performance of the model
 
 These visualizations help in analyzing the accuracy and effectiveness of the predictions.
 
-## Model
+## Models
+The following machine learning models are implemented in this project:
+
+- **Random Forests**: An ensemble learning method that operates by constructing multiple decision trees during training. The output of the random forest is the average prediction of the individual trees. This method helps in improving the accuracy and controlling overfitting.
+
+- **XGBoost**: An optimized distributed gradient boosting library designed to be highly efficient, flexible, and portable. XGBoost uses a more regularized model formalization to control overfitting, which makes it a robust choice for stock price prediction.
+
+- **Long Short-Term Memory (LSTM)**: A type of recurrent neural network (RNN) that is well-suited for learning from sequential data. LSTMs are capable of learning long-term dependencies, making them ideal for time series prediction tasks like stock price forecasting.
+
 
 ## Results
+The performance of each model is evaluated using various metrics, including R², Mean Squared Error (MSE), Root Mean Squared Error (RMSE), and Mean Absolute Error (MAE). Below are the evaluation results for the implemented models:
+
+| Model           | R²      | MSE     | RMSE   | MAE    |
+|-----------------|---------|---------|--------|--------|
+| Random Forests  | -0.0791 | 14.188  | 3.7667 | 2.9595 |
+| XGBoost         | 0.021   | 12.8716 | 3.5877 | 2.6664 |
+| LSTM            | -0.0039 | 13.1986 | 3.633  | 2.7948 |
+
+### Evaluation Metrics
+- **R² (Coefficient of Determination)**: Indicates how well the predictions match the actual values. A negative R² indicates that the model is performing worse than a horizontal line (mean prediction).
+- **MSE (Mean Squared Error)**: Measures the average squared difference between the predicted and actual values. Lower values indicate better performance.
+- **RMSE (Root Mean Squared Error)**: The square root of MSE, providing an error metric in the same unit as the target variable. Lower values indicate better performance.
+- **MAE (Mean Absolute Error)**: Measures the average absolute difference between the predicted and actual values. Lower values indicate better performance.
 
 ## Contributing
 
