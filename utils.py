@@ -1,17 +1,15 @@
-import torch
-import argparse
 import numpy as np
 import pandas as pd
-import torch.nn as nn
 import matplotlib.pyplot as plt
 from tqdm import tqdm
-from catboost import CatBoostRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+from argparse import Namespace, ArgumentParser
+from models import CatBoost, Model
 
-def parse_args()-> argparse.Namespace:
+def parse_args()-> Namespace:
 
-    parser = argparse.ArgumentParser()
+    parser = ArgumentParser()
     parser.add_argument("--data_path", default=None, type=str, required=True)
     parser.add_argument("--model", default="catboost", type=str)
     parser.add_argument("--window_size", default=20, type=int)
@@ -21,7 +19,7 @@ def parse_args()-> argparse.Namespace:
     return args
 
 class Stocker():
-    def __init__(self, args):
+    def __init__(self, args: Namespace):
         self.args = args
 
     def preprocess(self):
@@ -58,15 +56,12 @@ class Stocker():
 
     def train(self):
         if self.args.model == "catboost":
-            self.model = CatBoostRegressor(verbose=100)
-            x_train = self.x_train.reshape(self.x_train.shape[0], -1)
-            x_test = self.x_test.reshape(self.x_test.shape[0], -1)
-            self.model.fit(x_train, self.y_train)
-            self.y_pred = self.model.predict(x_test)
-
-        elif self.args.model == "lstm":
-            self.model = LSTM()
-            pass
+            self.model = CatBoost()
+        else:
+            self.model = Model(model=self.args.model, input_shape=self.x_train.shape)
+        
+        self.model.fit(self.x_train, self.y_train)
+        self.y_pred = self.model.predict(self.x_test)
 
     def evaluate(self):
         r2 = r2_score(self.y_test, self.y_pred)
@@ -118,18 +113,3 @@ class Stocker():
         plt.tight_layout()
         plt.show()
     
-class LSTM(nn.Module):
-    def __init__(self, input_size, hidden_size, num_layers):
-        super().__init__()
-        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        self.hidden_size = hidden_size
-        self.num_layers = num_layers
-        self.lstm = nn.LSTM(input_size, self.hidden_size, self.num_layers, batch_first=True)
-        self.fc = nn.Linear(hidden_size, 1)
-
-    def forward(self, x):
-        h_0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(self.device)
-        c_0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(self.device)
-        out, _ = self.lstm(x, (h_0, c_0))
-        out = self.fc(out[:, -1, :])
-        return out

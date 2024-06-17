@@ -78,7 +78,7 @@ The script will perform the following steps:
 You can customize the behavior of the tool using various configuration options. Here are some examples:
 
 - `data_path`: Specify the path to the input data file.
-- `model`: Choose the machine learning model to use (e.g., catboost.).
+- `model`: Choose the machine learning model to use.
 - `test_size`: Specify the number of latest trading days to use as the test set.
 - `window_size`: Specify the number of past days (D) to use for predicting the next day (D+1).
 
