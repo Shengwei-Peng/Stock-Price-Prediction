@@ -66,7 +66,7 @@ To use the stock price prediction tool, follow these steps:
 1. **Prepare your dataset**: Ensure your dataset is in the correct format and located in the `data` directory.
 2. **Run the main script**: Execute the following command to start the process:
    ```bash
-   python main.py --data_path data/2330.csv --model lstm --test_size 20 --window_size 20
+   python main.py --data_path data/2330.csv --model catboost --test_size 20 --window_size 20
    ```
 The script will perform the following steps:
    - **Preprocessing**: Clean and prepare the data for analysis.
@@ -78,7 +78,7 @@ The script will perform the following steps:
 You can customize the behavior of the tool using various configuration options. Here are some examples:
 
 - `data_path`: Specify the path to the input data file.
-- `model`: Choose the machine learning model to use (e.g., CatBoost.).
+- `model`: Choose the machine learning model to use (e.g., catboost.).
 - `test_size`: Specify the number of latest trading days to use as the test set.
 - `window_size`: Specify the number of past days (D) to use for predicting the next day (D+1).
 

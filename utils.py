@@ -1,17 +1,19 @@
+import torch
 import argparse
 import numpy as np
 import pandas as pd
+import torch.nn as nn
 import matplotlib.pyplot as plt
 from tqdm import tqdm
+from catboost import CatBoostRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-from catboost import CatBoostRegressor
 
 def parse_args()-> argparse.Namespace:
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_path", default=None, type=str, required=True)
-    parser.add_argument("--model", default="CatBoost", type=str)
+    parser.add_argument("--model", default="catboost", type=str)
     parser.add_argument("--window_size", default=20, type=int)
     parser.add_argument("--test_size", default=20, type=int)
     args = parser.parse_args()
@@ -39,7 +41,7 @@ class Stocker():
                 'close',
                 'change',
                 'transaction',
-                ]].iloc[i : i + self.args.window_size].values.flatten())
+                ]].iloc[i : i + self.args.window_size].values)
             y.append(data['change'].iloc[i + self.args.window_size])
         x = np.array(x)
         y = np.array(y)
@@ -55,12 +57,15 @@ class Stocker():
         self.y_test = y_test
 
     def train(self):
-        if self.args.model == "CatBoost":
+        if self.args.model == "catboost":
             self.model = CatBoostRegressor(verbose=100)
-            self.model.fit(self.x_train, self.y_train)
-            self.y_pred = self.model.predict(self.x_test)
+            x_train = self.x_train.reshape(self.x_train.shape[0], -1)
+            x_test = self.x_test.reshape(self.x_test.shape[0], -1)
+            self.model.fit(x_train, self.y_train)
+            self.y_pred = self.model.predict(x_test)
 
-        elif self.args.model == "LSTM":
+        elif self.args.model == "lstm":
+            self.model = LSTM()
             pass
 
     def evaluate(self):
@@ -112,3 +117,19 @@ class Stocker():
         plt.grid(True, linestyle='--', alpha=0.6)
         plt.tight_layout()
         plt.show()
+    
+class LSTM(nn.Module):
+    def __init__(self, input_size, hidden_size, num_layers):
+        super().__init__()
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.hidden_size = hidden_size
+        self.num_layers = num_layers
+        self.lstm = nn.LSTM(input_size, self.hidden_size, self.num_layers, batch_first=True)
+        self.fc = nn.Linear(hidden_size, 1)
+
+    def forward(self, x):
+        h_0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(self.device)
+        c_0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(self.device)
+        out, _ = self.lstm(x, (h_0, c_0))
+        out = self.fc(out[:, -1, :])
+        return out
