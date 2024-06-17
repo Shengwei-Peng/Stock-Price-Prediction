@@ -39,10 +39,14 @@ The dataset used in this project consists of historical stock prices fetched usi
 
 ```python
 import twstock
+import pandas as pd
 
 # Fetch historical stock data for stock code '2330' from January 2014 to present
 stock = twstock.Stock('2330')
-stock.fetch_from(2014, 1)
+data = pd.DataFrame(stock.fetch_from(2014, 1))
+
+# Save the data to a CSV file
+data.to_csv("2330.csv", index=False)
 ```
 
 Below is a brief description of each column in the dataset and a sample table to illustrate the data format:
