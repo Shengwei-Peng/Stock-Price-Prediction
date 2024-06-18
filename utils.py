@@ -7,7 +7,7 @@ from tqdm import tqdm
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from argparse import Namespace, ArgumentParser
-from models import xgboost, random_forest, networks
+from models import random_forest, xgboost, networks
 
 def set_seed(seed):
     random.seed(seed)
@@ -85,11 +85,13 @@ class Stocker():
         mse = mean_squared_error(self.y_test, self.y_pred)
         rmse = np.sqrt(mse)
         mae = mean_absolute_error(self.y_test, self.y_pred)
+        ndei = rmse / np.std(self.y_test)
         self.metrics = {
             'R² (Coefficient of Determination)': r2,
             'Mean Squared Error (MSE)': mse,
             'Root Mean Squared Error (RMSE)': rmse,
             'Mean Absolute Error (MAE)': mae,
+            'Non-dimensional Error Index (NDEI)': ndei,
         }
         print("Model Performance Metrics:")
         for key, value in self.metrics.items():

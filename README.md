@@ -51,17 +51,25 @@ data.to_csv("2330.csv", index=False)
 
 Below is a brief description of each column in the dataset and a sample table to illustrate the data format:
 
-| Column      | Description                                   | Data Type  |
-| ----------- | --------------------------------------------- | ---------- |
-| Date        | The trading date                              | YYYY-MM-DD |
-| Capacity    | The total traded volume of stocks (in shares) | int        |
-| Turnover    | The total value of traded stocks (in NTD)     | int        |
-| Open        | The opening price of the stock                | float      |
-| High        | The highest price during the day              | float      |
-| Low         | The lowest price during the day               | float      |
-| Close       | The closing price of the stock                | float      |
-| Change      | The price change compared to the previous day | float      |
-| Transaction | The number of transactions                    | int        |
+| Column      | Description                                  | Data Type  | Unit           |
+|-------------|----------------------------------------------|------------|----------------|
+| Date        | The trading date                             | YYYY-MM-DD |                |
+| Capacity    | The total traded volume of stocks            | int        | Shares         |
+| Turnover    | The total value of traded stocks             | int        | TWD            |
+| Open        | The opening price of the stock               | float      | TWD            |
+| High        | The highest price during the day             | float      | TWD            |
+| Low         | The lowest price during the day              | float      | TWD            |
+| Close       | The closing price of the stock               | float      | TWD            |
+| Change      | The price change compared to the previous day| float      | TWD            |
+| Transaction | The number of transactions                   | int        | Transactions   |
+
+### Example Data
+
+| Date       | Capacity | Turnover   | Open  | High  | Low   | Close | Change | Transaction |
+|------------|----------|------------|-------|-------|-------|-------|--------|-------------|
+| 2014-01-02 | 15133724 | 1578860796 | 105.0 | 105.5 | 103.5 | 104.5 | -1.0   | 4136        |
+| 2014-01-03 | 41160529 | 4220062918 | 103.0 | 103.0 | 102.0 | 102.5 | -2.0   | 8524        |
+| 2014-01-06 | 23729719 | 2432745661 | 102.0 | 103.0 | 102.0 | 102.5 |  0.0   | 4874        |
 
 ## Usage
 
@@ -82,7 +90,7 @@ The script will perform the following steps:
 You can customize the behavior of the tool using various configuration options. Here are some examples:
 
 - `data_path`: Specify the path to the input data file.
-- `model`: Choose the machine learning model to use. Options include `random_forest`, `xgboost`, and `lstm`.
+- `model`: Choose the machine learning model to use. Options include `random_forest`, `xgboost`, `lstm` and `transformer`.
 - `test_size`: Specify the number of latest trading days to use as the test set.
 - `window_size`: Specify the number of past days (D) to use for predicting the next day (D+1).
 - `seed`: Set a random seed for reproducibility of results.
@@ -100,27 +108,34 @@ These visualizations help in analyzing the accuracy and effectiveness of the pre
 ## Models
 The following machine learning models are implemented in this project:
 
-- **Random Forests**: An ensemble learning method that operates by constructing multiple decision trees during training. The output of the random forest is the average prediction of the individual trees. This method helps in improving the accuracy and controlling overfitting.
+- **Random Forest**:
+  Construct multiple decision trees during training and average their predictions. This ensemble method enhances accuracy and reduces overfitting by combining the results of multiple trees, making it effective for handling non-linear relationships and feature interactions.
 
-- **XGBoost**: An optimized distributed gradient boosting library designed to be highly efficient, flexible, and portable. XGBoost uses a more regularized model formalization to control overfitting, which makes it a robust choice for stock price prediction.
+- **XGBoost**:
+  Builds an ensemble of trees sequentially, with each new tree correcting the errors of the previous ones. This gradient boosting technique includes regularization to prevent overfitting, known for its efficiency and ability to model complex non-linear relationships.
 
-- **Long Short-Term Memory (LSTM)**: A type of recurrent neural network (RNN) that is well-suited for learning from sequential data. LSTMs are capable of learning long-term dependencies, making them ideal for time series prediction tasks like stock price forecasting.
+- **Long Short-Term Memory (LSTM)**:
+  A type of recurrent neural network (RNN) designed for learning from sequential data. LSTMs have memory cells that retain information over long periods, making them ideal for capturing long-term dependencies and trends in time series data.
 
+- **Transformer**:
+  Utilizes self-attention mechanisms to process entire sequences in parallel, effectively weighing the importance of different parts of the input data. This allows Transformers to efficiently capture long-range dependencies and model complex temporal patterns.
 
 ## Results
 The performance of each model is evaluated using various metrics, including R², Mean Squared Error (MSE), Root Mean Squared Error (RMSE), and Mean Absolute Error (MAE). Below are the evaluation results for the implemented models:
 
-| Model           | R²      | MSE     | RMSE   | MAE    |
-|-----------------|---------|---------|--------|--------|
-| Random Forests  | -0.0791 | 14.188  | 3.7667 | 2.9595 |
-| XGBoost         | 0.021   | 12.8716 | 3.5877 | 2.6664 |
-| LSTM            | -0.0039 | 13.1986 | 3.633  | 2.7948 |
+| Model         | R²     | MSE     | RMSE   | MAE    | NDEI   |
+|---------------|--------|---------|--------|--------|--------|
+| Random Forest | 0.7832 | 13.1793 | 3.6303 | 3.0765 | 0.4656 |
+| XGBoost       | 0.6167 | 23.2974 | 4.8267 | 3.8451 | 0.6191 |
+| LSTM          | 0.7675 | 14.1318 | 3.7592 | 3.0583 | 0.4822 |
+| Transformer   | 0.7645 | 14.3175 | 3.7838 | 3.0347 | 0.4853 |
 
 ### Evaluation Metrics
 - **R² (Coefficient of Determination)**: Indicates how well the predictions match the actual values. A negative R² indicates that the model is performing worse than a horizontal line (mean prediction).
 - **MSE (Mean Squared Error)**: Measures the average squared difference between the predicted and actual values. Lower values indicate better performance.
 - **RMSE (Root Mean Squared Error)**: The square root of MSE, providing an error metric in the same unit as the target variable. Lower values indicate better performance.
 - **MAE (Mean Absolute Error)**: Measures the average absolute difference between the predicted and actual values. Lower values indicate better performance.
+- **NDEI (Non-dimensional Error Index)**: The ratio of the RMSE to the standard deviation of the actual values. Lower values indicate better performance, and it is useful for comparing the error relative to the variability of the data.
 
 ### Data Details
 - **Stock**: TSMC (2330)
