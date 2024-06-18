@@ -53,7 +53,7 @@ class Stocker():
                 'change',
                 'transaction',
                 ]].iloc[i : i + self.args.window_size].values)
-            y.append(data['change'].iloc[i + self.args.window_size])
+            y.append(data['change'].iloc[i + self.args.window_size] / data['change'].iloc[i + self.args.window_size -1])
         x = np.array(x)
         y = np.array(y)
         x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=self.args.test_size, shuffle=False)

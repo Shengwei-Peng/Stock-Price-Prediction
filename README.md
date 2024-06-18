@@ -54,8 +54,8 @@ Below is a brief description of each column in the dataset and a sample table to
 | Column      | Description                                   | Data Type  |
 | ----------- | --------------------------------------------- | ---------- |
 | Date        | The trading date                              | YYYY-MM-DD |
-| Capacity    | The total traded volume of stocks             | int        |
-| Turnover    | The total value of traded stocks              | int        |
+| Capacity    | The total traded volume of stocks (in shares) | int        |
+| Turnover    | The total value of traded stocks (in NTD)     | int        |
 | Open        | The opening price of the stock                | float      |
 | High        | The highest price during the day              | float      |
 | Low         | The lowest price during the day               | float      |
