@@ -49,14 +49,15 @@ class Stocker():
                 'open',
                 'high',
                 'low',
-                'close',
                 'change',
                 'transaction',
+                'close',
                 ]].iloc[i : i + self.args.window_size].values)
-            y.append(data['change'].iloc[i + self.args.window_size] / data['change'].iloc[i + self.args.window_size -1])
+            y.append(data['change'].iloc[i + self.args.window_size] / data['close'].iloc[i + self.args.window_size -1])
         x = np.array(x)
         y = np.array(y)
-        x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=self.args.test_size, shuffle=False)
+        x_train, x_test, y_train, _ = train_test_split(x, y, test_size=self.args.test_size, shuffle=False)
+        y_test = data['close'].iloc[-self.args.test_size:]
         print(f"x_train: {x_train.shape}")
         print(f"y_train: {y_train.shape}")
         print(f"x_test: {x_test.shape}")
@@ -77,6 +78,7 @@ class Stocker():
         
         self.model.fit(self.x_train, self.y_train)
         self.y_pred = self.model.predict(self.x_test)
+        self.y_pred = (1 + self.y_pred) * self.x_test[:,-1,-1]
 
     def evaluate(self):
         r2 = r2_score(self.y_test, self.y_pred)

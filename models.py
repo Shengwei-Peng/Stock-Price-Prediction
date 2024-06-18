@@ -38,17 +38,30 @@ class xgboost():
         return y_pred
 
 
+class catboost():
+    def __init__(self, seed):
+        super().__init__()
+        self.model = CatBoostRegressor(random_seed=seed)
+
+    def fit(self, x_train: np.ndarray, y_train: np.ndarray):
+        x_train = x_train.reshape(x_train.shape[0], -1)
+        self.model.fit(x_train, y_train)
+
+    def predict(self, x_test: np.ndarray) -> np.ndarray:
+        x_test = x_test.reshape(x_test.shape[0], -1)
+        y_pred = self.model.predict(x_test)
+        return y_pred
+
+
 class networks():
-    def __init__(self, model: str, input_shape: Tuple[int, ...], batch_size: int = 4096, epochs: int = 100, lr: float = 1e-4):
+    def __init__(self, model: str, input_shape: Tuple[int, ...], batch_size: int = 4096, epochs: int = 1000, lr: float = 0.001):
         super().__init__()
         self.epochs = epochs
         self.batch_size = batch_size
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
         if model == "lstm":
-            self.model = lstm(input_size=input_shape[2], hidden_size=50, num_layers=10).to(self.device)
-        elif model == "mlp":
-            self.model = mlp(input_size=input_shape[1] * input_shape[2], hidden_size=512).to(self.device)
+            self.model = lstm(input_size=input_shape[2], hidden_size=20, num_layers=2).to(self.device)
 
         self.criterion = nn.MSELoss()
         self.optimizer = Adam(self.model.parameters(), lr=lr)
