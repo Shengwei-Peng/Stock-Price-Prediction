@@ -8,7 +8,6 @@ This repository contains code and resources for predicting stock prices using ma
 - [Installation](#installation)
 - [Data](#data)
 - [Usage](#usage)
-- [Model](#model)
 - [Results](#results)
 - [Contributing](#contributing)
 - [License](#license)
@@ -78,7 +77,7 @@ To use the stock price prediction tool, follow these steps:
 1. **Prepare your dataset**: Ensure your dataset is in the correct format and located in the `data` directory.
 2. **Run the main script**: Execute the following command to start the process:
    ```bash
-   python main.py --data_path data/2330.csv --model lstm --test_size 20 --window_size 20 --seed 0
+   python main.py --data_path data/2330.csv --model transformer --test_size 20 --window_size 20 --seed 0
    ```
 The script will perform the following steps:
    - **Preprocessing**: Clean and prepare the data for analysis.
@@ -90,7 +89,7 @@ The script will perform the following steps:
 You can customize the behavior of the tool using various configuration options. Here are some examples:
 
 - `data_path`: Specify the path to the input data file.
-- `model`: Choose the machine learning model to use. Options include `random_forest`, `xgboost`, `lstm` and `transformer`.
+- `model`: Choose the machine learning model to use. Options include `linear_regression`, `svm`, `random_forest`, `xgboost`, `lstm` and `transformer`.
 - `test_size`: Specify the number of latest trading days to use as the test set.
 - `window_size`: Specify the number of past days (D) to use for predicting the next day (D+1).
 - `seed`: Set a random seed for reproducibility of results.
@@ -105,30 +104,17 @@ The tool generates various plots to help understand the performance of the model
 
 These visualizations help in analyzing the accuracy and effectiveness of the predictions.
 
-## Models
-The following machine learning models are implemented in this project:
-
-- **Random Forest**:
-  Construct multiple decision trees during training and average their predictions. This ensemble method enhances accuracy and reduces overfitting by combining the results of multiple trees, making it effective for handling non-linear relationships and feature interactions.
-
-- **XGBoost**:
-  Builds an ensemble of trees sequentially, with each new tree correcting the errors of the previous ones. This gradient boosting technique includes regularization to prevent overfitting, known for its efficiency and ability to model complex non-linear relationships.
-
-- **Long Short-Term Memory (LSTM)**:
-  A type of recurrent neural network (RNN) designed for learning from sequential data. LSTMs have memory cells that retain information over long periods, making them ideal for capturing long-term dependencies and trends in time series data.
-
-- **Transformer**:
-  Utilizes self-attention mechanisms to process entire sequences in parallel, effectively weighing the importance of different parts of the input data. This allows Transformers to efficiently capture long-range dependencies and model complex temporal patterns.
-
 ## Results
-The performance of each model is evaluated using various metrics, including R², Mean Squared Error (MSE), Root Mean Squared Error (RMSE), and Mean Absolute Error (MAE). Below are the evaluation results for the implemented models:
+The performance of each model is evaluated using various metrics, including R², MSE, RMSE, MAE and NDEI. Below are the evaluation results for the implemented models:
 
-| Model         | R²     | MSE     | RMSE   | MAE    | NDEI   |
-|---------------|--------|---------|--------|--------|--------|
-| Random Forest | 0.7832 | 13.1793 | 3.6303 | 3.0765 | 0.4656 |
-| XGBoost       | 0.6167 | 23.2974 | 4.8267 | 3.8451 | 0.6191 |
-| LSTM          | 0.7675 | 14.1318 | 3.7592 | 3.0583 | 0.4822 |
-| Transformer   | 0.7645 | 14.3175 | 3.7838 | 3.0347 | 0.4853 |
+| Model             | R²     | MSE     | RMSE   | MAE    | NDEI   |
+|-------------------|--------|---------|--------|--------|--------|
+| Linear Regression | 0.5790 | 25.5890 | 5.0586 | 4.3584 | 0.6488 |
+| SVM               | 0.4966 | 30.5983 | 5.5316 | 4.2504 | 0.7095 |
+| Random Forest     | 0.7832 | 13.1793 | 3.6303 | 3.0765 | 0.4656 |
+| XGBoost           | 0.6167 | 23.2974 | 4.8267 | 3.8451 | 0.6191 |
+| LSTM              | 0.7675 | 14.1318 | 3.7592 | 3.0583 | 0.4822 |
+| Transformer       | 0.7645 | 14.3175 | 3.7838 | 3.0347 | 0.4853 |
 
 ### Evaluation Metrics
 - **R² (Coefficient of Determination)**: Indicates how well the predictions match the actual values. A negative R² indicates that the model is performing worse than a horizontal line (mean prediction).

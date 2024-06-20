@@ -7,7 +7,7 @@ from tqdm import tqdm
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from argparse import Namespace, ArgumentParser
-from models import random_forest, xgboost, networks
+from models import linear_regression, svm, random_forest, xgboost, networks
 
 def set_seed(seed):
     random.seed(seed)
@@ -58,6 +58,7 @@ class Stocker():
         y = np.array(y)
         x_train, x_test, y_train, _ = train_test_split(x, y, test_size=self.args.test_size, shuffle=False)
         y_test = data['close'].iloc[-self.args.test_size:]
+        
         print(f"x_train: {x_train.shape}")
         print(f"y_train: {y_train.shape}")
         print(f"x_test: {x_test.shape}")
@@ -69,7 +70,11 @@ class Stocker():
         self.y_test = y_test
 
     def train(self):
-        if self.args.model == "random_forest":
+        if self.args.model == "linear_regression":
+            self.model = linear_regression()
+        elif self.args.model == "svm":
+            self.model = svm()
+        elif self.args.model == "random_forest":
             self.model = random_forest(self.args.seed)
         elif self.args.model == "xgboost":
             self.model = xgboost(self.args.seed)

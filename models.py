@@ -4,8 +4,41 @@ import torch.nn as nn
 from torch.optim import Adam
 from torch.utils.data import DataLoader, TensorDataset
 from typing import Tuple
+from sklearn.linear_model import LinearRegression
+from sklearn.svm import SVR
 from sklearn.ensemble import RandomForestRegressor
 from xgboost import XGBRegressor
+
+
+class linear_regression():
+    def __init__(self):
+        super().__init__()
+        self.model = LinearRegression()
+
+    def fit(self, x_train: np.ndarray, y_train: np.ndarray):
+        x_train = x_train.reshape(x_train.shape[0], -1)
+        self.model.fit(x_train, y_train)
+
+    def predict(self, x_test: np.ndarray) -> np.ndarray:
+        x_test = x_test.reshape(x_test.shape[0], -1)
+        y_pred = self.model.predict(x_test)
+        return y_pred
+
+
+class svm():
+    def __init__(self):
+        super().__init__()
+        self.model = SVR()
+
+    def fit(self, x_train: np.ndarray, y_train: np.ndarray):
+        x_train = x_train.reshape(x_train.shape[0], -1)
+        self.model.fit(x_train, y_train)
+
+    def predict(self, x_test: np.ndarray) -> np.ndarray:
+        x_test = x_test.reshape(x_test.shape[0], -1)
+        y_pred = self.model.predict(x_test)
+        return y_pred
+
 
 class random_forest():
     def __init__(self, seed):
