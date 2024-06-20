@@ -2,6 +2,8 @@
 
 This repository contains code and resources for predicting stock prices using machine learning techniques. The goal is to develop a model that can accurately predict future stock prices based on historical data.
 
+![comparison](https://github.com/Shengwei0516/Stock-Price-Prediction/blob/main/imgs/prediction_comparison.png)
+
 ## Table of Contents
 
 - [Introduction](#introduction)
