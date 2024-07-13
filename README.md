@@ -25,7 +25,7 @@ To run this project locally, follow these steps:
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/Shengwei0516/Stock-Price-Prediction.git
+    git clone https://github.com/Shengwei-Peng/Stock-Price-Prediction.git
     cd Stock-Price-Prediction
     ```
 
